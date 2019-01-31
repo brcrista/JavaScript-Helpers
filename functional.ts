@@ -1,0 +1,1 @@
+const eq = x => y => x === y;
