@@ -1,6 +1,6 @@
-/** Combine multiple `Iterable`s into a single `Iterable`. */
-function* chain(...iterables: Iterable<any>[]): Iterable<any> {
-    for (const iterable of iterables) {
-        yield* iterable;
+/** Join zero or more iterables into a single iterable. */
+function* chain<T>(...iterables: Array<Iterable<T>>) {
+    for (const it of iterables) {
+        yield* it;
     }
 }
