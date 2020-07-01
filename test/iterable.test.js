@@ -95,27 +95,11 @@ describe('iterable.chain', () => {
         expect(iterable.chain()).toBeEmptyIterable();
     });
 
-    // test('returns an empty iterable when nothing is chained', () => {
-    //     expect(iterable.chain()).toYield([]);
-    // });
-
     test('passes through a single argument', () => {
         expect(iterable.chain([1, 2])).toYield(1, 2);
     });
 
-    // test('passes through a single argument', () => {
-    //     expect(iterable.chain([1, 2, 3])).toYield(1, 2);
-    // });
-
-    // test('passes through a single argument', () => {
-    //     expect(iterable.chain([1, 2, 3])).toYield(1, 3, 3);
-    // });
-
-    // test('passes through a single argument', () => {
-    //     expect(iterable.chain([1, 2])).toYield(1, 3, 3);
-    // });
-
-    // test('passes through a single argument', () => {
-    //     expect(iterable.chain([1, 2])).toYield();
-    // });
+    test('chains multiple arguments', () => {
+        expect(iterable.chain([1, 2], (function* () { yield 3; yield 4; })(), [5])).toYield(1, 2, 3, 4, 5);
+    });
 });
