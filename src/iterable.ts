@@ -27,15 +27,15 @@ export function* sequence<T>(n: number, sequencer: (i: number) => T) {
 }
 
 /**
- * Generate an iterable of integers from `min` to `max` (inclusive).
+ * Generate a sequence of integers for the half-open set `[min, max)`.
  * If `min` is not an integer, it is rounded up.
  * If `max` is not an integer, it is rounded down.
- * If `min` > `max` (after rounding if `min` or `max` is not an integer), an empty array is returned.
+ * If `min` >= `max` (after rounding), an empty array is returned.
  */
 export function range(min: number, max: number) {
     min = Math.ceil(min);
     max = Math.floor(max);
 
-    const sizeOfRange = Math.max(0, max - min + 1);
+    const sizeOfRange = Math.max(0, max - min);
     return sequence(sizeOfRange, n => n + min);
 }
