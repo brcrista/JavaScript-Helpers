@@ -1,11 +1,17 @@
-export const log = {
-    info: (message: any) => console.log(`[INFO] ${message}`),
-    warning: (message: any) => console.log(`[WARNING] ${message}`),
-    error: (message: any) => console.error(`[ERROR] ${message}`)
+export interface Logger {
+    info(message: string): void;
+    warning(message: string): void;
+    error(message: string): void;
+}
+
+export const trace: Logger = {
+    info: (message: string) => console.log(`[INFO] ${message}`),
+    warning: (message: string) => console.log(`[WARNING] ${message}`),
+    error: (message: string) => console.error(`[ERROR] ${message}`)
 };
 
 /** Log `label: ${value}` and pass the value through. */
 export function tee(label: any, value: any) {
-    log.info(`${label}: ${value}`);
+    trace.info(`${label}: ${value}`);
     return value;
 }
