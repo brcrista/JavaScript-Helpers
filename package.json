@@ -1,0 +1,23 @@
+{
+  "name": "typescript-helpers",
+  "version": "0.0.0",
+  "description": "Miscellaneous TypeScript functions and types that I use frequently.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brcrista/TypeScript-Helpers.git"
+  },
+  "author": "Brian Cristante",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brcrista/TypeScript-Helpers/issues"
+  },
+  "homepage": "https://github.com/brcrista/TypeScript-Helpers#readme",
+  "devDependencies": {
+    "typescript": "^3.9.5"
+  }
+}
