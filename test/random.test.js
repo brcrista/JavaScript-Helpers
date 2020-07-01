@@ -1,3 +1,4 @@
+'use strict';
 const random = require('../dist/random');
 
 describe('random.shuffle', () => {

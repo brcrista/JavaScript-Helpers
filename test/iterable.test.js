@@ -1,3 +1,4 @@
+'use strict';
 const iterable = require('../dist/iterable');
 
 expect.extend({
