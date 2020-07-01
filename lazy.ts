@@ -1,5 +1,5 @@
 /** Lazily initializes a read-only value from a callback function. */
-class Lazy<T> {
+export class Lazy<T> {
     private _value: T | null = null;
 
     constructor(private readonly init: () => T) {}

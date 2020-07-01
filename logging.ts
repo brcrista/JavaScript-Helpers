@@ -1,11 +1,11 @@
-const log = {
-    info: message => console.log(`[INFO] ${message}`),
-    warning: message => console.log(`[WARNING] ${message}`),
-    error: message => console.error(`[ERROR] ${message}`)
+export const log = {
+    info: (message: any) => console.log(`[INFO] ${message}`),
+    warning: (message: any) => console.log(`[WARNING] ${message}`),
+    error: (message: any) => console.error(`[ERROR] ${message}`)
 };
 
 /** Log `label: ${value}` and pass the value through. */
-function trace(label, value) {
+export function tee(label: any, value: any) {
     log.info(`${label}: ${value}`);
     return value;
 }
