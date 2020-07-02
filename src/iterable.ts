@@ -85,16 +85,24 @@ export function reduce<T>(iterable: Iterable<T>, accumulator: (accumulated: T, c
     if (initialValue === undefined) {
         // Use the first element as the initial value.
         const iterator = iterable[Symbol.iterator]();
-        const firstElement = iterator.next();
-        if (firstElement.done) {
+        let currentElement = iterator.next();
+        if (currentElement.done) {
             throw new TypeError('Reduce of empty iterable with no initial value');
         }
 
-        let accumulated = firstElement.value;
+        let accumulated = currentElement.value;
         // Start the accumulation on the second element.
+        currentElement = iterator.next();
+        for (let i = 1; !currentElement.done; i++, currentElement = iterator.next()) {
+            accumulated = accumulator(accumulated, currentElement.value, i);
+        }
         return accumulated;
     } else {
-        return initialValue;
+        let accumulated = initialValue;
+        for (const item of enumerate(iterable)) {
+            accumulated = accumulator(accumulated, item[1], item[0]);
+        }
+        return accumulated;
     }
 }
 
