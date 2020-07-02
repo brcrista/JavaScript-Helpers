@@ -159,10 +159,21 @@ describe('iterable.enumerate', () => {
 
 describe('iterable.map', () => {
     test('returns an empty iterable when passed an empty iterable', () => {
-        expect(iterable.map(x => x, [])).toBeEmpty();
+        expect(iterable.map([], x => x)).toBeEmpty();
     });
 
     test('invokes a function on a nonempty iterable', () => {
-        expect(iterable.map(x => 2 * x, [1, 2, 3])).toYield([2, 4, 6]);
+        expect(iterable.map([1, 2, 3], x => 2 * x)).toYield([2, 4, 6]);
+    });
+});
+
+describe('iterable.filter', () => {
+    test('returns an empty iterable when passed an empty iterable', () => {
+        expect(iterable.filter([], x => x)).toBeEmpty();
+    });
+
+    test('invokes a predicate on elements from a nonempty iterable', () => {
+        const isEven = x => x % 2 === 0;
+        expect(iterable.filter([0, 1, 2, 3, 4], isEven)).toYield([0, 2, 4]);
     });
 });

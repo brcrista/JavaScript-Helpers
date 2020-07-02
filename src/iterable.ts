@@ -67,10 +67,25 @@ export function* enumerate<T>(iterable: Iterable<T>): Generator<[number, T], voi
 }
 
 /**
- * Call a callback function on each element of an iterable and generate a new iterable with the result.
+ * Invoke a callback function on each element of an iterable and generate a new iterable with the result.
+ * @param callback - A function that is called on each element in the iterable. It may optionally take the current index of the element. The function is called lazily as the result is iterated.
+ * @param thisArg - An object which the `this` keyword refers to in `callback`. If `thisArg` is omitted, `this` will be `undefined`.
  */
-export function* map<T, U>(callbackfn: (value: T, index: number) => U, iterable: Iterable<T>): Generator<U, void> {
+export function* map<T, U>(iterable: Iterable<T>, callback: (value: T, index: number) => U, thisArg?: any): Generator<U, void> {
     for (const item of enumerate(iterable)) {
-        yield callbackfn(item[1], item[0]);
+        yield callback.call(thisArg, item[1], item[0]);
+    }
+}
+
+/**
+ * Return the elements of an iterable for which a callback function is truthy.
+ * @param callback - A predicate that is called on each element in the iterable. It may optionally take the current index of the element. The function is called lazily as the result is iterated.
+ * @param thisArg - An object which the `this` keyword refers to in `callback`. If `thisArg` is omitted, `this` will be `undefined`.
+ */
+export function* filter<T>(iterable: Iterable<T>, callback: (value: T, index: number) => unknown, thisArg?: any): Generator<T, void> {
+    for (const item of enumerate(iterable)) {
+        if (callback.call(thisArg, item[1], item[0])) {
+            yield item[1];
+        }
     }
 }
