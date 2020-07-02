@@ -6,7 +6,8 @@
   "types": "dist/core.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "examples": "node docs/example/with.js && node docs/example/without.js"
   },
   "repository": {
     "type": "git",
