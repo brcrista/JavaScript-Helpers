@@ -1,6 +1,6 @@
 'use strict';
 
-// Create a deck of cards and then deal 5 random cards to 4 players, each.
+// Create a deck of cards and then deal 5 random cards each to 4 players.
 
 // Create the deck.
 const numbers = [];
