@@ -133,6 +133,25 @@ export function* skip<T>(n: number, iterable: Iterable<T>): Generator<T, void> {
 }
 
 /**
+ * Returns the elements between the indices `start` and `end` of an iterable.
+ * @param {number} start - The zero-based index at which to start the slice (inclusive).
+ * Unlike `Array.prototype.slice`, a negative `start` does not indicate an offset from the end of the iterable.
+ * @param {number} end - The zero-based index at which to end the slice (exclusive).
+ */
+export function slice<T>(iterable: Iterable<T>, start: number, end?: number): Generator<T, void> {
+    if (end === undefined) {
+        return skip(start, iterable);
+    } else {
+        // Do some rounding to match the behavior of `Array.prototype.slice`
+        // when the inputs aren't nonnegative integers.
+        start = Math.max(Math.floor(start), 0);
+        end = Math.floor(end);
+        const sizeOfSlice = end - start;
+        return take(sizeOfSlice, skip(start, iterable));
+    }
+}
+
+/**
  * Produce an iterable of `n` items from a `sequencer` function.
  * @param sequencer - A function that will be passed the index of each element being generated.
  */

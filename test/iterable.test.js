@@ -225,6 +225,43 @@ describe('iterable.skip', () => {
     });
 });
 
+describe('iterable.slice', () => {
+    test('returns an empty iterable when the input iterable is empty', () => {
+        expect(iterable.slice([], 2, 5)).toBeEmpty();
+    });
+
+    test('returns the last elements of an iterable when only `start` is given', () => {
+        expect(iterable.slice([1, 2, 3, 4], 2)).toYield([3, 4]);
+    });
+
+    test('returns the elements between `start` and `end`', () => {
+        expect(iterable.slice([1, 2, 3, 4, 5, 6], 2, 3)).toYield([3]);
+        expect(iterable.slice([1, 2, 3, 4, 5, 6], 2, 4)).toYield([3, 4]);
+    });
+
+    test('works when `start` or `end` are at the boundaries of the iterable', () => {
+        expect(iterable.slice([1, 2, 3, 4, 5, 6], 0, 3)).toYield([1, 2, 3]);
+        expect(iterable.slice([1, 2, 3, 4, 5, 6], 2, 5)).toYield([3, 4, 5]);
+        expect(iterable.slice([1, 2, 3, 4, 5, 6], 0, 5)).toYield([1, 2, 3, 4, 5]);
+    });
+
+    test('works when `start` or `end` are outside the boundaries of the iterable', () => {
+        expect(iterable.slice([1, 2, 3, 4, 5, 6], -1, 3)).toYield([1, 2, 3]);
+        expect(iterable.slice([1, 2, 3, 4, 5, 6], 2, 6)).toYield([3, 4, 5, 6]);
+        expect(iterable.slice([1, 2, 3, 4, 5, 6], 0, 6)).toYield([1, 2, 3, 4, 5, 6]);
+        expect(iterable.slice([1, 2, 3, 4, 5, 6], -1, 7)).toYield([1, 2, 3, 4, 5, 6]);
+    });
+
+    test('works with floating-point bounds', () => {
+        expect(iterable.slice([1, 2, 3, 4, 5, 6], 0.2, 3.8)).toYield([1, 2, 3]);
+    });
+
+    test('returns an empty iterable when `start <= end`', () => {
+        expect(iterable.slice([1, 2, 3, 4], 2, 1)).toBeEmpty();
+        expect(iterable.slice([1, 2, 3, 4], 2, 2)).toBeEmpty();
+    });
+});
+
 describe('iterable.product', () => {
     test('returns an empty iterable when one of the iterables is empty', () => {
         expect(iterable.product([], [])).toBeEmpty();
