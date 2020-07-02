@@ -188,8 +188,16 @@ export function* sequence<T>(n: number, sequencer: (i: number) => T) {
 
 /**
  * Generate the Cartesian product of a pair of iterables.
+ * @param as - This may be any iterable.
+ * @param bs - If this argument is not an array, it will be captured as an array before starting iteration.
+ * This is because it will be iterated multiple times, which is not supported by iterable iterators such as generators.
  */
 export function* product<A, B>(as: Iterable<A>, bs: Iterable<B>): Generator<[A, B], void> {
+    // Capture `bs` as an array for convenience and for JavaScript code that doesn't get type checked.
+    if (!Array.isArray(bs)) {
+        bs = Array.from(bs);
+    }
+
     for (const a of as) {
         for (const b of bs) {
             yield [a, b];

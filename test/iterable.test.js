@@ -317,4 +317,22 @@ describe('iterable.product', () => {
             [2, 'a'], [2, 'b'], [2, 'c']
         ], pairsStrictEqual);
     });
+
+    test('works when the one of the arguments is a generator', () => {
+        function* generatorFunction() {
+            yield 1;
+            yield 2;
+        }
+
+        expect(iterable.product(['a', 'b', 'c'], generatorFunction())).toYield([
+            ['a', 1], ['a', 2],
+            ['b', 1], ['b', 2],
+            ['c', 1], ['c', 2]
+        ], pairsStrictEqual);
+
+        expect(iterable.product(generatorFunction(), ['a', 'b', 'c'])).toYield([
+            [1, 'a'], [1, 'b'], [1, 'c'],
+            [2, 'a'], [2, 'b'], [2, 'c']
+        ], pairsStrictEqual);
+    });
 });
