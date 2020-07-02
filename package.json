@@ -1,23 +1,24 @@
 {
-  "name": "typescript-helpers",
+  "name": "js-helpers",
   "version": "0.0.0",
-  "description": "Miscellaneous TypeScript functions and types that I use frequently.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "Zero-dependency library that makes coding in JavaScript a little nicer.",
+  "main": "dist/core.js",
+  "types": "dist/core.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "examples": "node docs/example/with.js && node docs/example/without.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/brcrista/TypeScript-Helpers.git"
+    "url": "git+https://github.com/brcrista/JavaScript-Helpers.git"
   },
   "author": "Brian Cristante",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/brcrista/TypeScript-Helpers/issues"
+    "url": "https://github.com/brcrista/JavaScript-Helpers/issues"
   },
-  "homepage": "https://github.com/brcrista/TypeScript-Helpers#readme",
+  "homepage": "https://github.com/brcrista/JavaScript-Helpers#readme",
   "devDependencies": {
     "@types/node": "^14.0.14",
     "jest": "^26.1.0",

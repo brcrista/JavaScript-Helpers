@@ -208,6 +208,22 @@ describe('iterable.take', () => {
         expect(iterable.take(0, [1, 2, 3, 4])).toBeEmpty();
         expect(iterable.take(0.8, [1, 2, 3, 4])).toBeEmpty();
     });
+
+    test('can be called multiple times', () => {
+        // Use a generator since they can't be iterated multiple times.
+        function* generatorFunction() {
+            yield 1;
+            yield 2;
+            yield 3;
+            yield 4;
+            yield 5;
+        }
+
+        const generator = generatorFunction();
+        expect(iterable.take(2, generator)).toYield([1, 2]);
+        expect(iterable.take(1, generator)).toYield([3]);
+        expect(iterable.take(3, generator)).toYield([4, 5]);
+    });
 });
 
 describe('iterable.skip', () => {
@@ -222,6 +238,26 @@ describe('iterable.skip', () => {
     test('returns the whole iterable when `n <= 0`', () => {
         expect(iterable.skip(-1, [1, 2, 3, 4])).toYield([1, 2, 3, 4]);
         expect(iterable.skip(0, [1, 2, 3, 4])).toYield([1, 2, 3, 4]);
+    });
+
+    test('can be called multiple times', () => {
+        // Use a generator since they can't be iterated multiple times.
+        function* generatorFunction() {
+            yield 1;
+            yield 2;
+            yield 3;
+            yield 4;
+            yield 5;
+        }
+
+        let generator = generatorFunction();
+        const multipleSkips = iterable.skip(1, iterable.skip(2, generator));
+        expect(multipleSkips).toYield([4, 5]);
+
+        generator = generatorFunction();
+        generator = iterable.skip(2, generator)
+        expect(iterable.take(1, generator)).toYield([3]);
+        expect(iterable.skip(1, generator)).toYield([5]);
     });
 });
 
@@ -274,6 +310,29 @@ describe('iterable.product', () => {
             ['a', 1], ['a', 2],
             ['b', 1], ['b', 2],
             ['c', 1], ['c', 2]
+        ], pairsStrictEqual);
+
+        expect(iterable.product([1, 2], ['a', 'b', 'c'])).toYield([
+            [1, 'a'], [1, 'b'], [1, 'c'],
+            [2, 'a'], [2, 'b'], [2, 'c']
+        ], pairsStrictEqual);
+    });
+
+    test('works when the one of the arguments is a generator', () => {
+        function* generatorFunction() {
+            yield 1;
+            yield 2;
+        }
+
+        expect(iterable.product(['a', 'b', 'c'], generatorFunction())).toYield([
+            ['a', 1], ['a', 2],
+            ['b', 1], ['b', 2],
+            ['c', 1], ['c', 2]
+        ], pairsStrictEqual);
+
+        expect(iterable.product(generatorFunction(), ['a', 'b', 'c'])).toYield([
+            [1, 'a'], [1, 'b'], [1, 'c'],
+            [2, 'a'], [2, 'b'], [2, 'c']
         ], pairsStrictEqual);
     });
 });
