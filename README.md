@@ -1,6 +1,9 @@
 # JavaScript Helpers
 
-Zero-dependency library that makes coding in JavaScript a little nicer. 
+[![GitHub Actions build badge](https://github.com/brcrista/JavaScript-Helpers/workflows/CI/badge.svg)](https://github.com/brcrista/JavaScript-Helpers/actions?query=workflow%3ACI)
+
+
+Zero-dependency library that makes coding in JavaScript a little nicer.
 
 ## Example
 
