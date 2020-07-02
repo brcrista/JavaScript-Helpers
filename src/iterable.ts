@@ -1,7 +1,6 @@
 /**
  * Check whether an object implements the iterable protocol.
- * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols.
- * Adapted from https://stackoverflow.com/a/32538867/3084634.
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols.
  */
 export function isIterable(obj: any): boolean {
     return obj !== undefined
@@ -27,17 +26,23 @@ export function* sequence<T>(n: number, sequencer: (i: number) => T) {
 }
 
 /**
- * Generate a sequence of integers for the half-open set `[min, max)`.
- * If `min` is not an integer, it is rounded up.
- * If `max` is not an integer, it is rounded down.
- * If `min` >= `max` (after rounding), an empty array is returned.
+ * Generate a sequence of integers for the half-open set `[min, max)` by increments of `step`.
+ * @param {number} min - Lower bound (inclusive) of the range.
+ * @param {number} max - Upper bound (exclusive) of the range.
+ * @param {number} step - Must be positive. Default = 1.
+ * @returns If `min` >= `max` (after rounding), an empty array is returned.
  */
-export function range(min: number, max: number): Generator<number, void> {
-    min = Math.ceil(min);
-    max = Math.floor(max);
+export function* range(min: number, max: number, step?: number): Generator<number, void> {
+    step = step ?? 1;
+    if (step <= 0) {
+        throw new RangeError('Invalid step size');
+    }
 
-    const sizeOfRange = Math.max(0, max - min);
-    return sequence(sizeOfRange, n => n + min);
+    let value = min;
+    while (value < max) {
+        yield value;
+        value += step;
+    }
 }
 
 /**

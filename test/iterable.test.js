@@ -101,13 +101,31 @@ describe('iterable.range', () => {
     test('returns an empty iterable for an empty range', () => {
         expect(iterable.range(1, 0)).toBeEmpty();
         expect(iterable.range(0, 0)).toBeEmpty();
+        expect(iterable.range(0, 0, 4)).toBeEmpty();
     });
 
-    test('returns a range of nonzero size', () => {
+    test('returns a range for integer bounds', () => {
         expect(iterable.range(0, 1)).toYield([0]);
         expect(iterable.range(0, 5)).toYield([0, 1, 2, 3, 4]);
         expect(iterable.range(3, 6)).toYield([3, 4, 5]);
         expect(iterable.range(-2, 0)).toYield([-2, -1]);
+    });
+
+    test('returns a range with a step size for integer bounds', () => {
+        expect(iterable.range(0, 1, 3)).toYield([0]);
+        expect(iterable.range(0, 5, 1)).toYield([0, 1, 2, 3, 4]);
+        expect(iterable.range(3, 6, 2)).toYield([3, 5]);
+    });
+
+    test('rejects a nonpositive step size', () => {
+        expect(() => [...iterable.range(0, 1, -1)]).toThrow(RangeError);
+        expect(() => [...iterable.range(0, 5, 0)]).toThrow(RangeError);
+    });
+
+    test('returns a range for floating-point bounds', () => {
+        // Checking equality with floats is bad, but using literals and adding integers should be predictable.
+        // If this becomes flaky, pass an approximate equality function to `toYield`.
+        expect(iterable.range(0.5, 3.6)).toYield([0.5, 1.5, 2.5, 3.5]);
     });
 });
 
