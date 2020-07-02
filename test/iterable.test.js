@@ -194,6 +194,37 @@ describe('iterable.reduce', () => {
     });
 });
 
+describe('iterable.take', () => {
+    test('returns an empty iterable when the input iterable is empty', () => {
+        expect(iterable.take(5, [])).toBeEmpty();
+    });
+
+    test('returns the first elements of an iterable', () => {
+        expect(iterable.take(2, [1, 2, 3, 4])).toYield([1, 2]);
+    });
+
+    test('returns an empty iterable when `n < 1`', () => {
+        expect(iterable.take(-1, [1, 2, 3, 4])).toBeEmpty();
+        expect(iterable.take(0, [1, 2, 3, 4])).toBeEmpty();
+        expect(iterable.take(0.8, [1, 2, 3, 4])).toBeEmpty();
+    });
+});
+
+describe('iterable.skip', () => {
+    test('returns an empty iterable when the input iterable is empty', () => {
+        expect(iterable.skip(5, [])).toBeEmpty();
+    });
+
+    test('returns the last elements of an iterable', () => {
+        expect(iterable.skip(2, [1, 2, 3, 4])).toYield([3, 4]);
+    });
+
+    test('returns the whole iterable when `n <= 0`', () => {
+        expect(iterable.skip(-1, [1, 2, 3, 4])).toYield([1, 2, 3, 4]);
+        expect(iterable.skip(0, [1, 2, 3, 4])).toYield([1, 2, 3, 4]);
+    });
+});
+
 describe('iterable.product', () => {
     test('returns an empty iterable when one of the iterables is empty', () => {
         expect(iterable.product([], [])).toBeEmpty();

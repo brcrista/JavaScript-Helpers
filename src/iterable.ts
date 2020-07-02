@@ -106,6 +106,32 @@ export function reduce<T>(iterable: Iterable<T>, accumulator: (accumulated: T, c
     }
 }
 
+/** Returns the first `n` elements of an iterable. */
+export function* take<T>(n: number, iterable: Iterable<T>): Generator<T, void> {
+    let i = 0;
+    for (const item of iterable) {
+        if (i < n) {
+            yield item;
+            i++;
+        } else {
+            break;
+        }
+    }
+}
+
+/** Returns the elements after the first `n` elements of an iterable. */
+export function* skip<T>(n: number, iterable: Iterable<T>): Generator<T, void> {
+    let i = 0;
+    for (const item of iterable) {
+        if (i >= n) {
+            yield item;
+        } else {
+            // Put this in an `else` so `i` doesn't overflow.
+            i++;
+        }
+    }
+}
+
 /**
  * Produce an iterable of `n` items from a `sequencer` function.
  * @param sequencer - A function that will be passed the index of each element being generated.
