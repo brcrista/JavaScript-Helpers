@@ -275,5 +275,10 @@ describe('iterable.product', () => {
             ['b', 1], ['b', 2],
             ['c', 1], ['c', 2]
         ], pairsStrictEqual);
+
+        expect(iterable.product([1, 2], ['a', 'b', 'c'])).toYield([
+            [1, 'a'], [1, 'b'], [1, 'c'],
+            [2, 'a'], [2, 'b'], [2, 'c']
+        ], pairsStrictEqual);
     });
 });
