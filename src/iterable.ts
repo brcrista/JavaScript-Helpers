@@ -74,7 +74,7 @@ export function* filter<T>(iterable: Iterable<T>, predicate: (value: T, index: n
 }
 
 /**
- * Converts an iterable to a single value by using an accumulator function
+ * Converts an iterable to a single value by using an accumulator function.
  * @param accumulator A function that is called on each element in the iterable along with the previous result of the function.
  * It may optionally take the current index of the element.
  * @param initialValue If specified, used as the initial value for `accumulated`.
@@ -105,6 +105,11 @@ export function reduce<T>(iterable: Iterable<T>, accumulator: (accumulated: T, c
         return accumulated;
     }
 }
+
+// NOTE: `Array.prototype.reduce` should actually be sufficient for most cases,
+// and `reduce` needs to iterate over the whole iterable anyway.
+// So, I'm not going to bother to implement the special cases of `reduce` (`some`, `every`, etc.).
+// The iterable version of `reduce` may be useful to avoid loading the entire collection into memory at once.
 
 /** Returns the first `n` elements of an iterable. */
 export function* take<T>(n: number, iterable: Iterable<T>): Generator<T, void> {
