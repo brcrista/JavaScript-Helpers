@@ -32,7 +32,7 @@ export function* sequence<T>(n: number, sequencer: (i: number) => T) {
  * If `max` is not an integer, it is rounded down.
  * If `min` >= `max` (after rounding), an empty array is returned.
  */
-export function range(min: number, max: number) {
+export function range(min: number, max: number): Generator<number, void> {
     min = Math.ceil(min);
     max = Math.floor(max);
 
@@ -43,10 +43,30 @@ export function range(min: number, max: number) {
 /**
  * Generate the Cartesian product of a pair of iterables.
  */
-export function* product<A, B>(as: Iterable<A>, bs: Iterable<B>): Generator<[A, B], void, undefined> {
+export function* product<A, B>(as: Iterable<A>, bs: Iterable<B>): Generator<[A, B], void> {
     for (const a of as) {
         for (const b of bs) {
             yield [a, b];
         }
+    }
+}
+
+/**
+ * Pair each element of a sequence with its index starting from `0`.
+ */
+export function* enumerate<T>(iterable: Iterable<T>): Generator<[number, T], void> {
+    let count = 0;
+    for (const item of iterable) {
+        yield [count++, item];
+    }
+}
+
+/**
+ * Call a callback function on each element of an iterable and generate a new iterable with the result.
+ */
+export function* map<T, U>(callbackfn: (value: T, index: number) => U, iterable: Iterable<T>): Generator<U, void> {
+    // TODO delegate when Array.isArray(iterable)
+    for (const item of enumerate(iterable)) {
+        yield callbackfn(item[1], item[0]);
     }
 }

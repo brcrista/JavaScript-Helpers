@@ -66,6 +66,11 @@ expect.extend({
     }
 });
 
+function pairsStrictEqual(lhs, rhs) {
+    return lhs[0] === rhs[0]
+        && lhs[1] === rhs[1];
+}
+
 // Note that if this fails, the other test results aren't reliable.
 describe('iterable.isIterable', () => {
     function* generatorFunction() {
@@ -131,15 +136,32 @@ describe('iterable.product', () => {
     });
 
     test('returns all permutations of nonempty iterables', () => {
-        function pairsEqual(lhs, rhs) {
-            return lhs[0] === rhs[0]
-                && lhs[1] === rhs[1];
-        }
-
         expect(iterable.product(['a', 'b', 'c'], [1, 2])).toYield([
             ['a', 1], ['a', 2],
             ['b', 1], ['b', 2],
             ['c', 1], ['c', 2]
-        ], pairsEqual);
+        ], pairsStrictEqual);
+    });
+});
+
+describe('iterable.enumerate', () => {
+    test('returns an empty iterable when passed an empty iterable', () => {
+        expect(iterable.enumerate([])).toBeEmptyIterable();
+    });
+
+    test('enumerates a nonempty iterable', () => {
+        expect(iterable.enumerate(['a', 'b', 'c'])).toYield([
+            [0, 'a'], [1, 'b'], [2, 'c']
+        ], pairsStrictEqual);
+    });
+});
+
+describe('iterable.map', () => {
+    test('returns an empty iterable when passed an empty iterable', () => {
+        expect(iterable.map(x => x, [])).toBeEmptyIterable();
+    });
+
+    test('invokes a function on a nonempty iterable', () => {
+        expect(iterable.map(x => 2 * x, [1, 2, 3])).toYield([2, 4, 6]);
     });
 });
