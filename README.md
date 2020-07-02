@@ -1,3 +1,3 @@
-# TypeScript Helpers
+# JavaScript Helpers
 
-Miscellaneous TypeScript functions and types that I use frequently.
+Zero-dependency library that makes coding in JavaScript a little nicer. 
