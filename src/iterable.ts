@@ -10,7 +10,7 @@ export function isIterable(obj: any): boolean {
 }
 
 /** Join zero or more iterables into a single iterable. */
-export function* chain<T>(...iterables: Array<Iterable<T>>): Generator<T, void, undefined> {
+export function* concat<T>(...iterables: Array<Iterable<T>>): Generator<T, void, undefined> {
     for (const it of iterables) {
         yield* it;
     }

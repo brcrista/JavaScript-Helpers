@@ -83,17 +83,17 @@ describe('iterable.isIterable', () => {
     });
 });
 
-describe('iterable.chain', () => {
+describe('iterable.concat', () => {
     test('returns an empty iterable when nothing is chained', () => {
-        expect(iterable.chain()).toBeEmpty();
+        expect(iterable.concat()).toBeEmpty();
     });
 
     test('passes through a single argument', () => {
-        expect(iterable.chain([1, 2])).toYield([1, 2]);
+        expect(iterable.concat([1, 2])).toYield([1, 2]);
     });
 
-    test('chains multiple arguments', () => {
-        expect(iterable.chain([1, 2], (function* () { yield 3; yield 4; })(), [5])).toYield([1, 2, 3, 4, 5]);
+    test('joins multiple arguments', () => {
+        expect(iterable.concat([1, 2], (function* () { yield 3; yield 4; })(), [5])).toYield([1, 2, 3, 4, 5]);
     });
 });
 
