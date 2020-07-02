@@ -24,7 +24,11 @@ expect.extend({
         };
     },
 
-    toYield(received, ...expectedValues) {
+    toYield(received, expectedValues, elementsEqual) {
+        if (elementsEqual === undefined) {
+            elementsEqual = (a, b) => a === b;
+        }
+
         if (!iterable.isIterable(received)) {
             return {
                 message: () => `${received} is not iterable`,
@@ -48,7 +52,7 @@ expect.extend({
 
         // `actual` and `expectedValues` have the same length
         for (let i = 0; i < actual.length; i++) {
-            if (actual[i] !== expectedValues[i]) {
+            if (!elementsEqual(actual[i], expectedValues[i])) {
                 return {
                     message: () => `${actual} and ${expectedValues} differ at index ${i} (${actual[i]} !== ${expectedValues[i]})`,
                     pass: false
@@ -97,11 +101,11 @@ describe('iterable.chain', () => {
     });
 
     test('passes through a single argument', () => {
-        expect(iterable.chain([1, 2])).toYield(1, 2);
+        expect(iterable.chain([1, 2])).toYield([1, 2]);
     });
 
     test('chains multiple arguments', () => {
-        expect(iterable.chain([1, 2], (function* () { yield 3; yield 4; })(), [5])).toYield(1, 2, 3, 4, 5);
+        expect(iterable.chain([1, 2], (function* () { yield 3; yield 4; })(), [5])).toYield([1, 2, 3, 4, 5]);
     });
 });
 
@@ -112,9 +116,30 @@ describe('iterable.range', () => {
     });
 
     test('returns a range of nonzero size', () => {
-        expect(iterable.range(0, 1)).toYield(0);
-        expect(iterable.range(0, 5)).toYield(0, 1, 2, 3, 4);
-        expect(iterable.range(3, 6)).toYield(3, 4, 5);
-        expect(iterable.range(-2, 0)).toYield(-2, -1);
+        expect(iterable.range(0, 1)).toYield([0]);
+        expect(iterable.range(0, 5)).toYield([0, 1, 2, 3, 4]);
+        expect(iterable.range(3, 6)).toYield([3, 4, 5]);
+        expect(iterable.range(-2, 0)).toYield([-2, -1]);
+    });
+});
+
+describe('iterable.product', () => {
+    test('returns an empty iterable when one of the iterables is empty', () => {
+        expect(iterable.product([], [])).toBeEmptyIterable();
+        expect(iterable.product(['a'], [])).toBeEmptyIterable();
+        expect(iterable.product([], ['a'])).toBeEmptyIterable();
+    });
+
+    test('returns all permutations of nonempty iterables', () => {
+        function pairsEqual(lhs, rhs) {
+            return lhs[0] === rhs[0]
+                && lhs[1] === rhs[1];
+        }
+
+        expect(iterable.product(['a', 'b', 'c'], [1, 2])).toYield([
+            ['a', 1], ['a', 2],
+            ['b', 1], ['b', 2],
+            ['c', 1], ['c', 2]
+        ], pairsEqual);
     });
 });

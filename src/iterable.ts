@@ -39,3 +39,14 @@ export function range(min: number, max: number) {
     const sizeOfRange = Math.max(0, max - min);
     return sequence(sizeOfRange, n => n + min);
 }
+
+/**
+ * Generate the Cartesian product of a pair of iterables.
+ */
+export function* product<A, B>(as: Iterable<A>, bs: Iterable<B>): Generator<[A, B], void, undefined> {
+    for (const a of as) {
+        for (const b of bs) {
+            yield [a, b];
+        }
+    }
+}
