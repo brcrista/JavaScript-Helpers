@@ -171,8 +171,8 @@ describe('iterable.reduce', () => {
         expect(iterable.reduce([], x => 2 * x, 1)).toBe(1);
     });
 
-    test('returns the last element when called with the identity function on a nonempty iterable', () => {
-        expect(iterable.reduce([1, 2, 3], x => x)).toBe(3);
+    test('returns the first element when called with the identity function on a nonempty iterable', () => {
+        expect(iterable.reduce([1, 2, 3], x => x)).toBe(1);
     });
 
     // Some accumulator functions
