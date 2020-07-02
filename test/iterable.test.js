@@ -1,3 +1,4 @@
+'use strict';
 const iterable = require('../dist/iterable');
 
 expect.extend({
@@ -101,5 +102,19 @@ describe('iterable.chain', () => {
 
     test('chains multiple arguments', () => {
         expect(iterable.chain([1, 2], (function* () { yield 3; yield 4; })(), [5])).toYield(1, 2, 3, 4, 5);
+    });
+});
+
+describe('iterable.range', () => {
+    test('returns an empty iterable for an empty range', () => {
+        expect(iterable.range(1, 0)).toBeEmptyIterable();
+        expect(iterable.range(0, 0)).toBeEmptyIterable();
+    });
+
+    test('returns a range of nonzero size', () => {
+        expect(iterable.range(0, 1)).toYield(0);
+        expect(iterable.range(0, 5)).toYield(0, 1, 2, 3, 4);
+        expect(iterable.range(3, 6)).toYield(3, 4, 5);
+        expect(iterable.range(-2, 0)).toYield(-2, -1);
     });
 });

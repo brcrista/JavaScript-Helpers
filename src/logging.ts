@@ -11,7 +11,7 @@ export const trace: Logger = {
 };
 
 /** Log `label: ${value}` and pass the value through. */
-export function tee(label: any, value: any) {
+export function tee(label: string, value: any) {
     trace.info(`${label}: ${value}`);
     return value;
 }
