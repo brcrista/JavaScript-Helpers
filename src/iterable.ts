@@ -65,7 +65,6 @@ export function* enumerate<T>(iterable: Iterable<T>): Generator<[number, T], voi
  * Call a callback function on each element of an iterable and generate a new iterable with the result.
  */
 export function* map<T, U>(callbackfn: (value: T, index: number) => U, iterable: Iterable<T>): Generator<U, void> {
-    // TODO delegate when Array.isArray(iterable)
     for (const item of enumerate(iterable)) {
         yield callbackfn(item[1], item[0]);
     }

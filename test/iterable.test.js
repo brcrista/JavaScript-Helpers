@@ -2,19 +2,10 @@
 const iterable = require('../dist/iterable');
 
 expect.extend({
-    toBeEmptyIterable(received) {
-        if (!iterable.isIterable(received)) {
+    toBeEmpty(received) {
+        for (const item in received) {
             return {
-                message: () => `${received} is not iterable`,
-                pass: false
-            };
-        }
-
-        const iterator = received[Symbol.iterator]();
-        const next = iterator.next();
-        if (!next.done) {
-            return {
-                message: () => `${received} is iterable, but it is not empty. First value: ${next.value}`,
+                message: () => `${received} is iterable, but it is not empty. First value: ${item}`,
                 pass: false
             };
         }
@@ -27,13 +18,6 @@ expect.extend({
     toYield(received, expectedValues, elementsEqual) {
         if (elementsEqual === undefined) {
             elementsEqual = (a, b) => a === b;
-        }
-
-        if (!iterable.isIterable(received)) {
-            return {
-                message: () => `${received} is not iterable`,
-                pass: false
-            };
         }
 
         const actual = Array.from(received);
@@ -54,7 +38,7 @@ expect.extend({
         for (let i = 0; i < actual.length; i++) {
             if (!elementsEqual(actual[i], expectedValues[i])) {
                 return {
-                    message: () => `${actual} and ${expectedValues} differ at index ${i} (${actual[i]} !== ${expectedValues[i]})`,
+                    message: () => `${actual} and ${expectedValues} differ at index ${i} (${actual[i]} != ${expectedValues[i]})`,
                     pass: false
                 };
             }
@@ -71,7 +55,6 @@ function pairsStrictEqual(lhs, rhs) {
         && lhs[1] === rhs[1];
 }
 
-// Note that if this fails, the other test results aren't reliable.
 describe('iterable.isIterable', () => {
     function* generatorFunction() {
         yield true;
@@ -102,7 +85,7 @@ describe('iterable.isIterable', () => {
 
 describe('iterable.chain', () => {
     test('returns an empty iterable when nothing is chained', () => {
-        expect(iterable.chain()).toBeEmptyIterable();
+        expect(iterable.chain()).toBeEmpty();
     });
 
     test('passes through a single argument', () => {
@@ -116,8 +99,8 @@ describe('iterable.chain', () => {
 
 describe('iterable.range', () => {
     test('returns an empty iterable for an empty range', () => {
-        expect(iterable.range(1, 0)).toBeEmptyIterable();
-        expect(iterable.range(0, 0)).toBeEmptyIterable();
+        expect(iterable.range(1, 0)).toBeEmpty();
+        expect(iterable.range(0, 0)).toBeEmpty();
     });
 
     test('returns a range of nonzero size', () => {
@@ -130,9 +113,9 @@ describe('iterable.range', () => {
 
 describe('iterable.product', () => {
     test('returns an empty iterable when one of the iterables is empty', () => {
-        expect(iterable.product([], [])).toBeEmptyIterable();
-        expect(iterable.product(['a'], [])).toBeEmptyIterable();
-        expect(iterable.product([], ['a'])).toBeEmptyIterable();
+        expect(iterable.product([], [])).toBeEmpty();
+        expect(iterable.product(['a'], [])).toBeEmpty();
+        expect(iterable.product([], ['a'])).toBeEmpty();
     });
 
     test('returns all permutations of nonempty iterables', () => {
@@ -146,7 +129,7 @@ describe('iterable.product', () => {
 
 describe('iterable.enumerate', () => {
     test('returns an empty iterable when passed an empty iterable', () => {
-        expect(iterable.enumerate([])).toBeEmptyIterable();
+        expect(iterable.enumerate([])).toBeEmpty();
     });
 
     test('enumerates a nonempty iterable', () => {
@@ -158,7 +141,7 @@ describe('iterable.enumerate', () => {
 
 describe('iterable.map', () => {
     test('returns an empty iterable when passed an empty iterable', () => {
-        expect(iterable.map(x => x, [])).toBeEmptyIterable();
+        expect(iterable.map(x => x, [])).toBeEmpty();
     });
 
     test('invokes a function on a nonempty iterable', () => {
