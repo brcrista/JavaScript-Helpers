@@ -16,16 +16,6 @@ export function* concat<T>(...iterables: Array<Iterable<T>>): Generator<T, void,
 }
 
 /**
- * Produce an array of `n` items from a `sequencer` function.
- * The `sequencer` function will be passed the index of each element being generated.
- */
-export function* sequence<T>(n: number, sequencer: (i: number) => T) {
-    for (let i = 0; i < n; i++) {
-        yield sequencer(i);
-    }
-}
-
-/**
  * Generate a sequence of integers for the half-open set `[min, max)` by increments of `step`.
  * @param {number} min - Lower bound (inclusive) of the range.
  * @param {number} max - Upper bound (exclusive) of the range.
@@ -42,17 +32,6 @@ export function* range(min: number, max: number, step?: number): Generator<numbe
     while (value < max) {
         yield value;
         value += step;
-    }
-}
-
-/**
- * Generate the Cartesian product of a pair of iterables.
- */
-export function* product<A, B>(as: Iterable<A>, bs: Iterable<B>): Generator<[A, B], void> {
-    for (const a of as) {
-        for (const b of bs) {
-            yield [a, b];
-        }
     }
 }
 
@@ -86,6 +65,27 @@ export function* filter<T>(iterable: Iterable<T>, callback: (value: T, index: nu
     for (const item of enumerate(iterable)) {
         if (callback.call(thisArg, item[1], item[0])) {
             yield item[1];
+        }
+    }
+}
+
+/**
+ * Produce an array of `n` items from a `sequencer` function.
+ * The `sequencer` function will be passed the index of each element being generated.
+ */
+export function* sequence<T>(n: number, sequencer: (i: number) => T) {
+    for (let i = 0; i < n; i++) {
+        yield sequencer(i);
+    }
+}
+
+/**
+ * Generate the Cartesian product of a pair of iterables.
+ */
+export function* product<A, B>(as: Iterable<A>, bs: Iterable<B>): Generator<[A, B], void> {
+    for (const a of as) {
+        for (const b of bs) {
+            yield [a, b];
         }
     }
 }

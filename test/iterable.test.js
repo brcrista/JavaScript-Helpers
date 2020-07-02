@@ -129,22 +129,6 @@ describe('iterable.range', () => {
     });
 });
 
-describe('iterable.product', () => {
-    test('returns an empty iterable when one of the iterables is empty', () => {
-        expect(iterable.product([], [])).toBeEmpty();
-        expect(iterable.product(['a'], [])).toBeEmpty();
-        expect(iterable.product([], ['a'])).toBeEmpty();
-    });
-
-    test('returns all permutations of nonempty iterables', () => {
-        expect(iterable.product(['a', 'b', 'c'], [1, 2])).toYield([
-            ['a', 1], ['a', 2],
-            ['b', 1], ['b', 2],
-            ['c', 1], ['c', 2]
-        ], pairsStrictEqual);
-    });
-});
-
 describe('iterable.enumerate', () => {
     test('returns an empty iterable when passed an empty iterable', () => {
         expect(iterable.enumerate([])).toBeEmpty();
@@ -175,5 +159,21 @@ describe('iterable.filter', () => {
     test('invokes a predicate on elements from a nonempty iterable', () => {
         const isEven = x => x % 2 === 0;
         expect(iterable.filter([0, 1, 2, 3, 4], isEven)).toYield([0, 2, 4]);
+    });
+});
+
+describe('iterable.product', () => {
+    test('returns an empty iterable when one of the iterables is empty', () => {
+        expect(iterable.product([], [])).toBeEmpty();
+        expect(iterable.product(['a'], [])).toBeEmpty();
+        expect(iterable.product([], ['a'])).toBeEmpty();
+    });
+
+    test('returns all permutations of nonempty iterables', () => {
+        expect(iterable.product(['a', 'b', 'c'], [1, 2])).toYield([
+            ['a', 1], ['a', 2],
+            ['b', 1], ['b', 2],
+            ['c', 1], ['c', 2]
+        ], pairsStrictEqual);
     });
 });
