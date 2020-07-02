@@ -47,8 +47,11 @@ export function* enumerate<T>(iterable: Iterable<T>): Generator<[number, T], voi
 
 /**
  * Invoke a callback function on each element of an iterable and generate a new iterable with the result.
- * @param callback - A function that is called on each element in the iterable. It may optionally take the current index of the element. The function is called lazily as the result is iterated.
- * @param thisArg - An object which the `this` keyword refers to in `callback`. If `thisArg` is omitted, `this` will be `undefined`.
+ * @param callback - A function that is called on each element in the iterable.
+ * It may optionally take the current index of the element.
+ * The function is called lazily as the result is iterated.
+ * @param thisArg - An object which the `this` keyword refers to in `callback`.
+ * If `thisArg` is omitted, `this` will be `undefined`.
  */
 export function* map<T, U>(iterable: Iterable<T>, callback: (value: T, index: number) => U, thisArg?: any): Generator<U, void> {
     for (const item of enumerate(iterable)) {
@@ -58,20 +61,46 @@ export function* map<T, U>(iterable: Iterable<T>, callback: (value: T, index: nu
 
 /**
  * Return the elements of an iterable for which a callback function is truthy.
- * @param callback - A predicate that is called on each element in the iterable. It may optionally take the current index of the element. The function is called lazily as the result is iterated.
+ * @param predicate - A function that is called on each element in the iterable. It may optionally take the current index of the element.
+ * The function is called lazily as the result is iterated.
  * @param thisArg - An object which the `this` keyword refers to in `callback`. If `thisArg` is omitted, `this` will be `undefined`.
  */
-export function* filter<T>(iterable: Iterable<T>, callback: (value: T, index: number) => unknown, thisArg?: any): Generator<T, void> {
+export function* filter<T>(iterable: Iterable<T>, predicate: (value: T, index: number) => unknown, thisArg?: any): Generator<T, void> {
     for (const item of enumerate(iterable)) {
-        if (callback.call(thisArg, item[1], item[0])) {
+        if (predicate.call(thisArg, item[1], item[0])) {
             yield item[1];
         }
     }
 }
 
 /**
- * Produce an array of `n` items from a `sequencer` function.
- * The `sequencer` function will be passed the index of each element being generated.
+ * Converts an iterable to a single value by using an accumulator function
+ * @param accumulator A function that is called on each element in the iterable along with the previous result of the function.
+ * It may optionally take the current index of the element.
+ * @param initialValue If specified, used as the initial value for `accumulated`.
+ * If not specified, the first element from the iterable will be used as the initial `accumulated` value and the accumulation will start on the second element.
+ * Calling `reduce` on an empty iterable without an initial value will throw a `TypeError`.
+ */
+export function reduce<T>(iterable: Iterable<T>, accumulator: (accumulated: T, current: T, index: number) => T, initialValue?: T): T {
+    if (initialValue === undefined) {
+        // Use the first element as the initial value.
+        const iterator = iterable[Symbol.iterator]();
+        const firstElement = iterator.next();
+        if (firstElement.done) {
+            throw new TypeError('Reduce of empty iterable with no initial value');
+        }
+
+        let accumulated = firstElement.value;
+        // Start the accumulation on the second element.
+        return accumulated;
+    } else {
+        return initialValue;
+    }
+}
+
+/**
+ * Produce an iterable of `n` items from a `sequencer` function.
+ * @param sequencer - A function that will be passed the index of each element being generated.
  */
 export function* sequence<T>(n: number, sequencer: (i: number) => T) {
     for (let i = 0; i < n; i++) {

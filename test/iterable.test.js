@@ -162,6 +162,38 @@ describe('iterable.filter', () => {
     });
 });
 
+describe('iterable.reduce', () => {
+    test('throws a TypeError when reducing an empty iterable with no initial value', () => {
+        expect(() => iterable.reduce([], x => x)).toThrow(TypeError);
+    });
+
+    test('returns the initial value when called on an empty iterable', () => {
+        expect(iterable.reduce([], x => 2 * x, 1)).toBe(1);
+    });
+
+    test('returns the last element when called with the identity function on a nonempty iterable', () => {
+        expect(iterable.reduce([1, 2, 3], x => x)).toBe(3);
+    });
+
+    // Some accumulator functions
+    const sum = (a, b) => a + b;
+    const and = (a, b) => a && b;
+    const or = (a, b) => a || b;
+
+    test('accumulates the elements in a nonempty iterable', () => {
+        expect(iterable.reduce([0, 1, 2, 3, 4], sum)).toBe(10);
+        expect(iterable.reduce(['hello', ' ', 'world'], sum)).toBe('hello world');
+        expect(iterable.reduce([true, true, true], and)).toBe(true);
+        expect(iterable.reduce([true, true, true], or)).toBe(true);
+        expect(iterable.reduce([true, false, true], and)).toBe(false);
+        expect(iterable.reduce([true, false, true], or)).toBe(true);
+    });
+
+    test('accumulates the elements in a nonempty iterable with an initial value', () => {
+        expect(iterable.reduce([0, 1, 2, 3, 4], sum, 10)).toBe(20);
+    });
+});
+
 describe('iterable.product', () => {
     test('returns an empty iterable when one of the iterables is empty', () => {
         expect(iterable.product([], [])).toBeEmpty();
