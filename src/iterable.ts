@@ -119,8 +119,11 @@ export function shift<T>(iterable: Iterable<T>): T | undefined {
 
 /** Return the first `n` elements of an iterable. */
 export function* take<T>(n: number, iterable: Iterable<T>): Generator<T, void> {
-    // If you use for..of, you can't call `take` multiple times on the same iterator
-    // if it is an iterable iterator such as a generator.
+    // Using `for..of` forcibly marks the iterator as `done` when the loop exits,
+    // even if you terminate the iteration early.
+    // Therefore, we need to iterate manually
+    // in order to support calling `take` multiple times on the same iterable
+    // (in the case of iterable iterators, such as generators).
     const iterator = iterable[Symbol.iterator]();
     for (let i = 0; i < n; i++) {
         // This part is tricky.
@@ -130,17 +133,19 @@ export function* take<T>(n: number, iterable: Iterable<T>): Generator<T, void> {
         // Therefore, we have to check `current.done` inside the loop
         // and not in the `for` condition.
         const current = iterator.next();
-        if (current.done)
-        {
+        if (current.done) {
             break;
         }
-
         yield current.value;
     }
 }
 
 /** Returns the elements after the first `n` elements of an iterable. */
 export function* skip<T>(n: number, iterable: Iterable<T>): Generator<T, void> {
+    // We actually don't care about multiple iterations here:
+    // `skip` is going to iterate through the end of its source.
+    // It's just a problem with `take` because, without knowing its implementation details,
+    // it seems like you should be able to start and stop iteration with it.
     let i = 0;
     for (const item of iterable) {
         if (i >= n) {

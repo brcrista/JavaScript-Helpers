@@ -239,6 +239,26 @@ describe('iterable.skip', () => {
         expect(iterable.skip(-1, [1, 2, 3, 4])).toYield([1, 2, 3, 4]);
         expect(iterable.skip(0, [1, 2, 3, 4])).toYield([1, 2, 3, 4]);
     });
+
+    test('can be called multiple times', () => {
+        // Use a generator since they can't be iterated multiple times.
+        function* generatorFunction() {
+            yield 1;
+            yield 2;
+            yield 3;
+            yield 4;
+            yield 5;
+        }
+
+        let generator = generatorFunction();
+        const multipleSkips = iterable.skip(1, iterable.skip(2, generator));
+        expect(multipleSkips).toYield([4, 5]);
+
+        generator = generatorFunction();
+        generator = iterable.skip(2, generator)
+        expect(iterable.take(1, generator)).toYield([3]);
+        expect(iterable.skip(1, generator)).toYield([5]);
+    });
 });
 
 describe('iterable.slice', () => {
