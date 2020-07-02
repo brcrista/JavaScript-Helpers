@@ -208,6 +208,22 @@ describe('iterable.take', () => {
         expect(iterable.take(0, [1, 2, 3, 4])).toBeEmpty();
         expect(iterable.take(0.8, [1, 2, 3, 4])).toBeEmpty();
     });
+
+    test('can be called multiple times', () => {
+        // Use a generator since they can't be iterated multiple times.
+        function* generatorFunction() {
+            yield 1;
+            yield 2;
+            yield 3;
+            yield 4;
+            yield 5;
+        }
+
+        const generator = generatorFunction();
+        expect(iterable.take(2, generator)).toYield([1, 2]);
+        expect(iterable.take(1, generator)).toYield([3]);
+        expect(iterable.take(3, generator)).toYield([4, 5]);
+    });
 });
 
 describe('iterable.skip', () => {

@@ -111,16 +111,31 @@ export function reduce<T>(iterable: Iterable<T>, accumulator: (accumulated: T, c
 // So, I'm not going to bother to implement the special cases of `reduce` (`some`, `every`, etc.).
 // The iterable version of `reduce` may be useful to avoid loading the entire collection into memory at once.
 
-/** Returns the first `n` elements of an iterable. */
+/** Return the first element of an iterable, or `undefined` if it is empty. */
+export function shift<T>(iterable: Iterable<T>): T | undefined {
+    const iterator = iterable[Symbol.iterator]();
+    return iterator.next().value;
+}
+
+/** Return the first `n` elements of an iterable. */
 export function* take<T>(n: number, iterable: Iterable<T>): Generator<T, void> {
-    let i = 0;
-    for (const item of iterable) {
-        if (i < n) {
-            yield item;
-            i++;
-        } else {
+    // If you use for..of, you can't call `take` multiple times on the same iterator
+    // if it is an iterable iterator such as a generator.
+    const iterator = iterable[Symbol.iterator]();
+    for (let i = 0; i < n; i++) {
+        // This part is tricky.
+        // If you `next` it, you have to `yield` it
+        // or else you will get an off-by-one error on subsequent calls
+        // when the iterator isn't done yet.
+        // Therefore, we have to check `current.done` inside the loop
+        // and not in the `for` condition.
+        const current = iterator.next();
+        if (current.done)
+        {
             break;
         }
+
+        yield current.value;
     }
 }
 
