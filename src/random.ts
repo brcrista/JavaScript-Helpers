@@ -6,12 +6,12 @@ export function randomInt(size: number): number {
     return Math.floor(Math.random() * size);
 }
 
-/** Select an element at random from an arary. */
+/** Select an element at random from an array. */
 export function choice<T>(array: Array<T>): T {
     return array[randomInt(array.length)];
 }
 
-/** Select and remove an element at random from an arary. */
+/** Select and remove an element at random from an array. */
 export function pick<T>(array: Array<T>): T {
     return remove(array, randomInt(array.length));
 }
