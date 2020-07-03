@@ -176,6 +176,43 @@ export function slice<T>(iterable: Iterable<T>, start: number, end?: number): Ge
     }
 }
 
+// type FlatArray<Arr, Depth extends number> = {
+//     "done": Arr,
+//     "recur": Arr extends ReadonlyArray<infer InnerArr>
+//         ? FlatArray<InnerArr, [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20][Depth]>
+//         : Arr
+// }[Depth extends -1 ? "done" : "recur"];
+
+// function flat<A, D extends number = 1>( this: A, depth?: D): FlatArray<A, D>[]
+// const arr1 = [1, 2, 3, 4].flat();
+// const arr2 = [1, [2, 3, 4]].flat();
+// const arr3 = [1, [2, [3, 4]]].flat();
+// const arr4 = [1, [2, [3, [4]]]].flat();
+
+// const arr5 = [1, 2, 3, 4].flat(2);
+// const arr6 = [1, [2, 3, 4]].flat(2);
+// const arr7 = [1, [2, [3, 4]]].flat(2);
+// const arr8 = [1, [2, [3, [4]]]].flat(2);
+
+
+// See the return type for `Array.prototype.flat` in lib.es2019.array.d.ts may be more precise,
+// but I haven't been able to make sense of it.
+/**
+ * Flatten an iterable of iterables recursively up to a given depth.
+* @param {number} depth - The maximum recursion depth
+*/
+export function* flat(iterable: Iterable<any>, depth?: number): Generator<any, void> {
+    depth = depth ?? 1;
+
+    for (const element of iterable) {
+        if (isIterable(element) && depth >= 1) {
+            yield* flat(element, depth - 1);
+        } else {
+            yield element;
+        }
+    }
+}
+
 /**
  * Produce an iterable of `n` items from a `sequencer` function.
  * @param sequencer - A function that will be passed the index of each element being generated.
