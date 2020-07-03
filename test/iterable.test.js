@@ -298,6 +298,75 @@ describe('iterable.slice', () => {
     });
 });
 
+describe('iterable.flat', () => {
+    test('returns an empty iterable when the input is empty', () => {
+        expect(iterable.flat([])).toBeEmpty();
+    });
+
+    test('flattens 1-D arrays', () => {
+        expect(iterable.flat([1, 2, 3, 4])).toYield([1, 2, 3, 4]);
+    });
+
+    test('flattens 2-D arrays', () => {
+        const array2d = [
+            ['a', 1], ['b', 2],
+            ['c', 3], ['d', 4]
+        ];
+
+        expect(iterable.flat(array2d)).toYield(['a', 1, 'b', 2, 'c', 3, 'd', 4]);
+    });
+
+    test('flattens mixed-dimension arrays', () => {
+        // Need to use `Array.from` + `toEqual` here.
+        // `toYield` can't handle deep equality.
+        expect(Array.from(iterable.flat([1, [2, 3, 4]]))).toEqual([1, 2, 3, 4]);
+        expect(Array.from(iterable.flat([1, [2, [3, 4]]]))).toEqual([1, 2, [3, 4]]);
+        expect(Array.from(iterable.flat([1, [2, [3, [4]]]]))).toEqual([1, 2, [3, [4]]]);
+    });
+
+    test('flattens up to `depth`', () => {
+        expect(Array.from(iterable.flat([1, [2, [3, 4]]], 2))).toEqual([1, 2, 3, 4]);
+        expect(Array.from(iterable.flat([1, [2, [3, [4]]]], 2))).toEqual([1, 2, 3, [4]]);
+        expect(Array.from(iterable.flat([1, [2, [3, [4]]]], 3))).toEqual([1, 2, 3, 4]);
+    });
+
+    test('handles `depth` greater than the actual depth', () => {
+        expect(Array.from(iterable.flat([1, 2, 3, 4], 2))).toEqual([1, 2, 3, 4]);
+        expect(Array.from(iterable.flat([1, [2, 3, 4]], 2))).toEqual([1, 2, 3, 4]);
+        expect(Array.from(iterable.flat([1, [2, [3, 4]]], 3))).toEqual([1, 2, 3, 4]);
+    });
+
+    test('treats nonpositive `depth` as a no-op', () => {
+        expect(Array.from(iterable.flat([1, [2, 3, 4]], 0))).toEqual([1, [2, 3, 4]]);
+        expect(Array.from(iterable.flat([1, [2, 3, 4]], -1))).toEqual([1, [2, 3, 4]]);
+        expect(iterable.flat([], 0)).toBeEmpty();
+    });
+
+    test('rounds floating-point `depth` down', () => {
+        expect(Array.from(iterable.flat([1, [2, 3, 4]], 0.1))).toEqual([1, [2, 3, 4]]);
+        expect(Array.from(iterable.flat([1, [2, 3, 4]], 1.8))).toEqual([1, 2, 3, 4]);
+    });
+});
+
+describe('iterable.flatMap', () => {
+    test('returns an empty iterable when passed an empty iterable', () => {
+        expect(iterable.flatMap([], x => x)).toBeEmpty();
+    });
+
+    test('invokes a function on a nonempty iterable', () => {
+        // Need to use `Array.from` + `toEqual` here.
+        // `toYield` can't handle deep equality.
+        expect(Array.from(iterable.flatMap([1, 2, 3], x => [...new Array(x).keys()])))
+            .toEqual([ 0, 0, 1, 0, 1, 2 ]);
+    });
+
+    test('is equivalent to `flat` when mapping the identity function', () => {
+        expect(Array.from(iterable.flatMap([1, [2, 3, 4]], x => x))).toEqual([1, 2, 3, 4]);
+        expect(Array.from(iterable.flatMap([1, [2, [3, 4]]], x => x))).toEqual([1, 2, [3, 4]]);
+        expect(Array.from(iterable.flatMap([1, [2, [3, [4]]]], x => x))).toEqual([1, 2, [3, [4]]]);
+    });
+});
+
 describe('iterable.product', () => {
     test('returns an empty iterable when one of the iterables is empty', () => {
         expect(iterable.product([], [])).toBeEmpty();

@@ -46,7 +46,7 @@ export function* enumerate<T>(iterable: Iterable<T>): Generator<[number, T], voi
 }
 
 /**
- * Invoke a callback function on each element of an iterable and generate a new iterable with the result.
+ * Apply a function to each element of an iterable and generate a new iterable with the result.
  * @param callback - A function that is called on each element in the iterable.
  * It may optionally take the current index of the element.
  * The function is called lazily as the result is iterated.
@@ -173,6 +173,45 @@ export function slice<T>(iterable: Iterable<T>, start: number, end?: number): Ge
         end = Math.floor(end);
         const sizeOfSlice = end - start;
         return take(sizeOfSlice, skip(start, iterable));
+    }
+}
+
+/**
+ * Flatten an iterable of iterables recursively up to a given depth.
+ * @param {number} depth - The maximum recursion depth
+ */
+export function* flat(iterable: Iterable<any>, depth?: number): Generator<any, void> {
+    depth = depth ?? 1;
+
+    for (const element of iterable) {
+        if (isIterable(element) && depth >= 1) {
+            yield* flat(element, depth - 1);
+        } else {
+            yield element;
+        }
+    }
+}
+
+/**
+ * Apply an iterable-returning function to each element of an iterable,
+ * then flatten all of the results into a new iterable.
+ * @param callback - A function that is called on each element in the iterable.
+ * It may optionally take the current index of the element.
+ * The function is called lazily as the result is iterated.
+ * @param thisArg - An object which the `this` keyword refers to in `callback`.
+ * If `thisArg` is omitted, `this` will be `undefined`.
+ */
+export function* flatMap<T, U>(
+    iterable: Iterable<T>,
+    callback: (value: T, index: number) => U | Iterable<U>,
+    thisArg?: any): Generator<U, void, undefined> {
+    for (const item of enumerate(iterable)) {
+        const result = callback.call(thisArg, item[1], item[0]);
+        if (isIterable(result)) {
+            yield* <Iterable<U>>result;
+        } else {
+            yield <U>result;
+        }
     }
 }
 
