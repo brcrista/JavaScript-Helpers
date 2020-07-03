@@ -46,7 +46,7 @@ export function* enumerate<T>(iterable: Iterable<T>): Generator<[number, T], voi
 }
 
 /**
- * Invoke a callback function on each element of an iterable and generate a new iterable with the result.
+ * Apply a function to each element of an iterable and generate a new iterable with the result.
  * @param callback - A function that is called on each element in the iterable.
  * It may optionally take the current index of the element.
  * The function is called lazily as the result is iterated.
@@ -176,31 +176,10 @@ export function slice<T>(iterable: Iterable<T>, start: number, end?: number): Ge
     }
 }
 
-// type FlatArray<Arr, Depth extends number> = {
-//     "done": Arr,
-//     "recur": Arr extends ReadonlyArray<infer InnerArr>
-//         ? FlatArray<InnerArr, [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20][Depth]>
-//         : Arr
-// }[Depth extends -1 ? "done" : "recur"];
-
-// function flat<A, D extends number = 1>( this: A, depth?: D): FlatArray<A, D>[]
-// const arr1 = [1, 2, 3, 4].flat();
-// const arr2 = [1, [2, 3, 4]].flat();
-// const arr3 = [1, [2, [3, 4]]].flat();
-// const arr4 = [1, [2, [3, [4]]]].flat();
-
-// const arr5 = [1, 2, 3, 4].flat(2);
-// const arr6 = [1, [2, 3, 4]].flat(2);
-// const arr7 = [1, [2, [3, 4]]].flat(2);
-// const arr8 = [1, [2, [3, [4]]]].flat(2);
-
-
-// See the return type for `Array.prototype.flat` in lib.es2019.array.d.ts may be more precise,
-// but I haven't been able to make sense of it.
 /**
  * Flatten an iterable of iterables recursively up to a given depth.
-* @param {number} depth - The maximum recursion depth
-*/
+ * @param {number} depth - The maximum recursion depth
+ */
 export function* flat(iterable: Iterable<any>, depth?: number): Generator<any, void> {
     depth = depth ?? 1;
 
@@ -209,6 +188,29 @@ export function* flat(iterable: Iterable<any>, depth?: number): Generator<any, v
             yield* flat(element, depth - 1);
         } else {
             yield element;
+        }
+    }
+}
+
+/**
+ * Apply an iterable-returning function to each element of an iterable,
+ * then flatten all of the results into a new iterable.
+ * @param callback - A function that is called on each element in the iterable.
+ * It may optionally take the current index of the element.
+ * The function is called lazily as the result is iterated.
+ * @param thisArg - An object which the `this` keyword refers to in `callback`.
+ * If `thisArg` is omitted, `this` will be `undefined`.
+ */
+export function* flatMap<T, U>(
+    iterable: Iterable<T>,
+    callback: (value: T, index: number) => U | Iterable<U>,
+    thisArg?: any): Generator<U, void, undefined> {
+    for (const item of enumerate(iterable)) {
+        const result = callback.call(thisArg, item[1], item[0]);
+        if (isIterable(result)) {
+            yield* <Iterable<U>>result;
+        } else {
+            yield <U>result;
         }
     }
 }

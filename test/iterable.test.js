@@ -348,6 +348,25 @@ describe('iterable.flat', () => {
     });
 });
 
+describe('iterable.flatMap', () => {
+    test('returns an empty iterable when passed an empty iterable', () => {
+        expect(iterable.flatMap([], x => x)).toBeEmpty();
+    });
+
+    test('invokes a function on a nonempty iterable', () => {
+        // Need to use `Array.from` + `toEqual` here.
+        // `toYield` can't handle deep equality.
+        expect(Array.from(iterable.flatMap([1, 2, 3], x => [...new Array(x).keys()])))
+            .toEqual([ 0, 0, 1, 0, 1, 2 ]);
+    });
+
+    test('is equivalent to `flat` when mapping the identity function', () => {
+        expect(Array.from(iterable.flatMap([1, [2, 3, 4]], x => x))).toEqual([1, 2, 3, 4]);
+        expect(Array.from(iterable.flatMap([1, [2, [3, 4]]], x => x))).toEqual([1, 2, [3, 4]]);
+        expect(Array.from(iterable.flatMap([1, [2, [3, [4]]]], x => x))).toEqual([1, 2, [3, [4]]]);
+    });
+});
+
 describe('iterable.product', () => {
     test('returns an empty iterable when one of the iterables is empty', () => {
         expect(iterable.product([], [])).toBeEmpty();
