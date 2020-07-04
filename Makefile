@@ -13,6 +13,7 @@ test:
 examples:
 	node docs/example/with.js
 	node docs/example/without.js
+	node docs/example/with-lodash.js
 
 .PHONY: package
 package: clean build test

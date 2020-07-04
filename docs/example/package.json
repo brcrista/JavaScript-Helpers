@@ -1,0 +1,11 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "description": "These are the code sample snippets in the root-level README.",
+  "private": true,
+  "keywords": [],
+  "author": "",
+  "dependencies": {
+    "lodash": "^4.17.15"
+  }
+}
