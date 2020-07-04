@@ -1,4 +1,4 @@
-import { remove } from './core';
+import { remove } from './index';
 import { sequence } from './iterable';
 
 /** Randomly choose an integer in the range [`0`, `size`) with a uniform distribution. */
