@@ -1,3 +1,6 @@
+.PHONY: all
+all: build test examples package
+
 .PHONY: build
 build:
 	npx tsc
