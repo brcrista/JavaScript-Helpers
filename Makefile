@@ -1,5 +1,5 @@
 .PHONY: all
-all: build test examples package
+all: package examples
 
 .PHONY: build
 build:
@@ -16,10 +16,11 @@ examples:
 
 .PHONY: package
 package: clean build test
-	npm pack
+	cp package.json dist
+	cp LICENSE dist
+	cp README.md dist
+	cd dist && npm pack
 
 .PHONY: clean
 clean:
 	rm -rf dist
-	rm -rf package
-	rm -f *.tgz
