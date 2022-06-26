@@ -4,6 +4,10 @@
   "description": "Zero-dependency library that makes coding in JavaScript a little nicer.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brcrista/JavaScript-Helpers.git"

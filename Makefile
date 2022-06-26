@@ -3,11 +3,11 @@ all: package examples
 
 .PHONY: build
 build:
-	npx tsc
+	npm run build
 
 .PHONY: test
 test:
-	npx jest
+	npm run test
 
 .PHONY: examples
 examples:
