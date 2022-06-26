@@ -36,6 +36,18 @@ export function* range(min: number, max: number, step?: number): Generator<numbe
 }
 
 /**
+ * The number of elements in an iterable.
+ */
+ export function count<T>(iterable: Iterable<T>): number {
+    let result = 0;
+    for (const _ of iterable) {
+        result++;
+    }
+
+    return result;
+}
+
+/**
  * Pair each element of a sequence with its index starting from `0`.
  */
 export function* enumerate<T>(iterable: Iterable<T>): Generator<[number, T], void> {
@@ -54,8 +66,8 @@ export function* enumerate<T>(iterable: Iterable<T>): Generator<[number, T], voi
  * If `thisArg` is omitted, `this` will be `undefined`.
  */
 export function* map<T, U>(iterable: Iterable<T>, callback: (value: T, index: number) => U, thisArg?: any): Generator<U, void> {
-    for (const item of enumerate(iterable)) {
-        yield callback.call(thisArg, item[1], item[0]);
+    for (const [index, item] of enumerate(iterable)) {
+        yield callback.call(thisArg, item, index);
     }
 }
 
@@ -66,9 +78,9 @@ export function* map<T, U>(iterable: Iterable<T>, callback: (value: T, index: nu
  * @param thisArg - An object which the `this` keyword refers to in `callback`. If `thisArg` is omitted, `this` will be `undefined`.
  */
 export function* filter<T>(iterable: Iterable<T>, predicate: (value: T, index: number) => unknown, thisArg?: any): Generator<T, void> {
-    for (const item of enumerate(iterable)) {
-        if (predicate.call(thisArg, item[1], item[0])) {
-            yield item[1];
+    for (const [index, item] of enumerate(iterable)) {
+        if (predicate.call(thisArg, item, index)) {
+            yield item;
         }
     }
 }
@@ -99,8 +111,8 @@ export function reduce<T>(iterable: Iterable<T>, accumulator: (accumulated: T, c
         return accumulated;
     } else {
         let accumulated = initialValue;
-        for (const item of enumerate(iterable)) {
-            accumulated = accumulator(accumulated, item[1], item[0]);
+        for (const [index, item] of enumerate(iterable)) {
+            accumulated = accumulator(accumulated, item, index);
         }
         return accumulated;
     }
@@ -205,8 +217,8 @@ export function* flatMap<T, U>(
     iterable: Iterable<T>,
     callback: (value: T, index: number) => U | Iterable<U>,
     thisArg?: any): Generator<U, void, undefined> {
-    for (const item of enumerate(iterable)) {
-        const result = callback.call(thisArg, item[1], item[0]);
+    for (const [index, item] of enumerate(iterable)) {
+        const result = callback.call(thisArg, item, index);
         if (isIterable(result)) {
             yield* <Iterable<U>>result;
         } else {
