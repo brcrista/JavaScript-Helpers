@@ -1,6 +1,6 @@
 {
   "name": "js-helpers",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Zero-dependency library that makes coding in JavaScript a little nicer.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
