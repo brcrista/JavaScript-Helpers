@@ -153,36 +153,36 @@ describe('iterable.enumerate', () => {
 
 describe('iterable.map', () => {
     test('returns an empty iterable when passed an empty iterable', () => {
-        expect(iterable.map([], x => x)).toBeEmpty();
+        expect(iterable.map(x => x, [])).toBeEmpty();
     });
 
     test('invokes a function on a nonempty iterable', () => {
-        expect(iterable.map([1, 2, 3], x => 2 * x)).toYield([2, 4, 6]);
+        expect(iterable.map( x => 2 * x, [1, 2, 3])).toYield([2, 4, 6]);
     });
 });
 
 describe('iterable.filter', () => {
     test('returns an empty iterable when passed an empty iterable', () => {
-        expect(iterable.filter([], x => x)).toBeEmpty();
+        expect(iterable.filter(x => x, [])).toBeEmpty();
     });
 
     test('invokes a predicate on elements from a nonempty iterable', () => {
         const isEven = x => x % 2 === 0;
-        expect(iterable.filter([0, 1, 2, 3, 4], isEven)).toYield([0, 2, 4]);
+        expect(iterable.filter(isEven, [0, 1, 2, 3, 4])).toYield([0, 2, 4]);
     });
 });
 
 describe('iterable.reduce', () => {
     test('throws a TypeError when reducing an empty iterable with no initial value', () => {
-        expect(() => iterable.reduce([], x => x)).toThrow(TypeError);
+        expect(() => iterable.reduce(x => x, [])).toThrow(TypeError);
     });
 
     test('returns the initial value when called on an empty iterable', () => {
-        expect(iterable.reduce([], x => 2 * x, 1)).toBe(1);
+        expect(iterable.reduce(x => 2 * x, [], 1)).toBe(1);
     });
 
     test('returns the first element when called with the identity function on a nonempty iterable', () => {
-        expect(iterable.reduce([1, 2, 3], x => x)).toBe(1);
+        expect(iterable.reduce(x => x, [1, 2, 3])).toBe(1);
     });
 
     // Some accumulator functions
@@ -191,16 +191,16 @@ describe('iterable.reduce', () => {
     const or = (a, b) => a || b;
 
     test('accumulates the elements in a nonempty iterable', () => {
-        expect(iterable.reduce([0, 1, 2, 3, 4], sum)).toBe(10);
-        expect(iterable.reduce(['hello', ' ', 'world'], sum)).toBe('hello world');
-        expect(iterable.reduce([true, true, true], and)).toBe(true);
-        expect(iterable.reduce([true, true, true], or)).toBe(true);
-        expect(iterable.reduce([true, false, true], and)).toBe(false);
-        expect(iterable.reduce([true, false, true], or)).toBe(true);
+        expect(iterable.reduce(sum, [0, 1, 2, 3, 4])).toBe(10);
+        expect(iterable.reduce(sum, ['hello', ' ', 'world'])).toBe('hello world');
+        expect(iterable.reduce(and, [true, true, true])).toBe(true);
+        expect(iterable.reduce(or, [true, true, true])).toBe(true);
+        expect(iterable.reduce(and, [true, false, true])).toBe(false);
+        expect(iterable.reduce(or, [true, false, true])).toBe(true);
     });
 
     test('accumulates the elements in a nonempty iterable with an initial value', () => {
-        expect(iterable.reduce([0, 1, 2, 3, 4], sum, 10)).toBe(20);
+        expect(iterable.reduce(sum, [0, 1, 2, 3, 4], 10)).toBe(20);
     });
 });
 
@@ -360,20 +360,20 @@ describe('iterable.flat', () => {
 
 describe('iterable.flatMap', () => {
     test('returns an empty iterable when passed an empty iterable', () => {
-        expect(iterable.flatMap([], x => x)).toBeEmpty();
+        expect(iterable.flatMap(x => x, [])).toBeEmpty();
     });
 
     test('invokes a function on a nonempty iterable', () => {
         // Need to use `Array.from` + `toEqual` here.
         // `toYield` can't handle deep equality.
-        expect(Array.from(iterable.flatMap([1, 2, 3], x => [...new Array(x).keys()])))
+        expect(Array.from(iterable.flatMap(x => [...new Array(x).keys()], [1, 2, 3])))
             .toEqual([ 0, 0, 1, 0, 1, 2 ]);
     });
 
     test('is equivalent to `flat` when mapping the identity function', () => {
-        expect(Array.from(iterable.flatMap([1, [2, 3, 4]], x => x))).toEqual([1, 2, 3, 4]);
-        expect(Array.from(iterable.flatMap([1, [2, [3, 4]]], x => x))).toEqual([1, 2, [3, 4]]);
-        expect(Array.from(iterable.flatMap([1, [2, [3, [4]]]], x => x))).toEqual([1, 2, [3, [4]]]);
+        expect(Array.from(iterable.flatMap(x => x, [1, [2, 3, 4]]))).toEqual([1, 2, 3, 4]);
+        expect(Array.from(iterable.flatMap(x => x, [1, [2, [3, 4]]]))).toEqual([1, 2, [3, 4]]);
+        expect(Array.from(iterable.flatMap(x => x, [1, [2, [3, [4]]]]))).toEqual([1, 2, [3, [4]]]);
     });
 });
 
