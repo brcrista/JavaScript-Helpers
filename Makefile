@@ -3,14 +3,15 @@ all: package examples
 
 .PHONY: build
 build:
-	npx tsc
+	npm run build
 
 .PHONY: test
 test:
-	npx jest
+	npm run test
 
 .PHONY: examples
 examples:
+	cd docs/example && npm install
 	node docs/example/with.js
 	node docs/example/without.js
 	node docs/example/with-lodash.js
