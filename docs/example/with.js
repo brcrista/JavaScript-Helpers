@@ -6,11 +6,11 @@ const random = require('../../dist/random');
 
 // Create the deck.
 const deck = iterable.map(
+    pair => { return { suit: pair[0], rank: pair[1] } },
     iterable.product(
         ['Hearts', 'Diamonds', 'Clubs', 'Spades'],
         iterable.concat(iterable.range(2, 11), ['J', 'Q', 'K', 'A'])
-    ),
-    pair => { return { suit: pair[0], rank: pair[1] } }
+    )
 );
 
 // Shuffle the deck.

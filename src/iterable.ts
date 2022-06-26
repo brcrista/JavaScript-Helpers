@@ -65,9 +65,9 @@ export function* enumerate<T>(iterable: Iterable<T>): Generator<[number, T], voi
  * @param thisArg - An object which the `this` keyword refers to in `callback`.
  * If `thisArg` is omitted, `this` will be `undefined`.
  */
-export function* map<T, U>(iterable: Iterable<T>, callback: (value: T, index: number) => U, thisArg?: any): Generator<U, void> {
-    for (const [index, item] of enumerate(iterable)) {
-        yield callback.call(thisArg, item, index);
+ export function* map<T, U>(callback: (value: T, index: number) => U, iterable: Iterable<T>, thisArg?: any): Generator<U, void> {
+    for (const item of enumerate(iterable)) {
+        yield callback.call(thisArg, item[1], item[0]);
     }
 }
 
@@ -77,10 +77,10 @@ export function* map<T, U>(iterable: Iterable<T>, callback: (value: T, index: nu
  * The function is called lazily as the result is iterated.
  * @param thisArg - An object which the `this` keyword refers to in `callback`. If `thisArg` is omitted, `this` will be `undefined`.
  */
-export function* filter<T>(iterable: Iterable<T>, predicate: (value: T, index: number) => unknown, thisArg?: any): Generator<T, void> {
-    for (const [index, item] of enumerate(iterable)) {
-        if (predicate.call(thisArg, item, index)) {
-            yield item;
+export function* filter<T>(predicate: (value: T, index: number) => unknown, iterable: Iterable<T>, thisArg?: any): Generator<T, void> {
+    for (const item of enumerate(iterable)) {
+        if (predicate.call(thisArg, item[1], item[0])) {
+            yield item[1];
         }
     }
 }
@@ -93,7 +93,7 @@ export function* filter<T>(iterable: Iterable<T>, predicate: (value: T, index: n
  * If not specified, the first element from the iterable will be used as the initial `accumulated` value and the accumulation will start on the second element.
  * Calling `reduce` on an empty iterable without an initial value will throw a `TypeError`.
  */
-export function reduce<T>(iterable: Iterable<T>, accumulator: (accumulated: T, current: T, index: number) => T, initialValue?: T): T {
+export function reduce<T>(accumulator: (accumulated: T, current: T, index: number) => T, iterable: Iterable<T>, initialValue?: T): T {
     if (initialValue === undefined) {
         // Use the first element as the initial value.
         const iterator = iterable[Symbol.iterator]();
@@ -214,8 +214,8 @@ export function* flat(iterable: Iterable<any>, depth?: number): Generator<any, v
  * If `thisArg` is omitted, `this` will be `undefined`.
  */
 export function* flatMap<T, U>(
-    iterable: Iterable<T>,
     callback: (value: T, index: number) => U | Iterable<U>,
+    iterable: Iterable<T>,
     thisArg?: any): Generator<U, void, undefined> {
     for (const [index, item] of enumerate(iterable)) {
         const result = callback.call(thisArg, item, index);
