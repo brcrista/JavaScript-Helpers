@@ -130,6 +130,16 @@ describe('iterable.range', () => {
 });
 
 describe('iterable.enumerate', () => {
+    test('counts an empty iterable', () => {
+        expect(iterable.count([])).toBe(0);
+    });
+
+    test('counts a nonempty iterable', () => {
+        expect(iterable.count(iterable.range(0, 100))).toBe(100);
+    });
+});
+
+describe('iterable.enumerate', () => {
     test('returns an empty iterable when passed an empty iterable', () => {
         expect(iterable.enumerate([])).toBeEmpty();
     });
