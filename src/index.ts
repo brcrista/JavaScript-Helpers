@@ -14,6 +14,21 @@ export function remove<T>(array: T[], i: number): T {
     return array.splice(i, 1)[0];
 }
 
+/**
+ * Produce a comparison function for use with `Array.prototype.sort()`.
+ */
+function compareBy<T>(sortKey: (t: T) => number): (a: T, b: T) => number {
+    return (a: T, b: T) => {
+        if (sortKey(a) < sortKey(b)) {
+            return -1;
+        } else if (sortKey(a) === sortKey(b)) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+}
+
 /** Lazily initializes a read-only value from a callback function. */
 export class Lazy<T> {
     private _value: T | null = null;
