@@ -91,3 +91,15 @@ for (const player of players) {
     console.log(`${player.name}'s hand: ${JSON.stringify(player.hand)}`);
 }
 ```
+
+## Developer's Guide
+
+To build the project:
+
+```
+make
+```
+
+To release a new version, create a new release on GitHub.
+Attach the `dist/js-helpers-X.Y.Z.tgz` file to the release.
+If the file doesn't exist for the current version, rerun `make` to produce it.
